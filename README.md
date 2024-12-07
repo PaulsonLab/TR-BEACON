@@ -3,7 +3,7 @@ This is the repo containing codes and results for [TR-BEACON: Shedding Light on 
 
 TR-BEACON is the extension of the Bayesian optimization inspired novelty search algorithm BEACON. Please refer to the [original BEACON paper](https://arxiv.org/abs/2406.03616) and [github repo](https://github.com/PaulsonLab/BEACON) for more detail.
 
-<img src='figure/illustrative.png' width='400'>
+<img src='figure/illustrative.png' width='800'>
 
 # Installation
 ```sh
