@@ -1,5 +1,5 @@
 # TR-BEACON: Shedding Light on Efficient Behavior Discovery in High-Dimensional Spaces with Bayesian Novelty Search over Trust Regions
-This is the repo containing codes and results for [TR-BEACON: Shedding Light on Efficient Behavior Discovery in High-Dimensional Spaces with Bayesian Novelty Search over Trust Regions](https://openreview.net/pdf?id=9Xo6ONB8E3) paper published at the NeurIPS 2024 Workshop on Bayesian Decision-making and Uncertainty.
+This is the repo containing codes and results for [TR-BEACON: Shedding Light on Efficient Behavior Discovery in High-Dimensional Spaces with Bayesian Novelty Search over Trust Regions](https://openreview.net/pdf?id=9Xo6ONB8E3) paper published at the NeurIPS 2024 Workshop on Bayesian Decision-making and Uncertainty.\\
 TR-BEACON is the extension of the Bayesian optimization inspired novelty search algorithm BEACON. Please refer to the [original BEACON paper](https://arxiv.org/abs/2406.03616) and [github repo](https://github.com/PaulsonLab/BEACON) for more detail.
 
 # Installation
