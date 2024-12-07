@@ -6,16 +6,11 @@ Created on Tue Aug 20 19:29:19 2024
 @author: tang.1856
 """
 
-import os
-import math
-import warnings
-from dataclasses import dataclass
 
+import math
+from dataclasses import dataclass
 import torch
-from botorch.acquisition import qExpectedImprovement, qLogExpectedImprovement
-from botorch.exceptions import BadInitialCandidatesWarning
 from botorch.fit import fit_gpytorch_mll
-from botorch.generation import MaxPosteriorSampling
 from botorch.models import SingleTaskGP
 from botorch.optim import optimize_acqf
 from botorch.test_functions import Ackley, Rosenbrock, StyblinskiTang
@@ -49,25 +44,14 @@ k_NN = 10
 max_cholesky_size = float("inf")  # Always use Cholesky
 n_bins = 50
 obj_lb = -14.30 # minimum obj value for Ackley
-# obj_lb = -10.3947
-# obj_lb = -7.79
 obj_ub =  0 # maximum obj value for Ackley
-# obj_lb = -1710685.71069 
-# obj_lb = -68571 # minimum obj value for Rosenbrock
-# obj_ub = 0 # obj maximum for Rosenbrock
-# obj_ub = 39.16599*dim # minimum obj val for 4D SkyTang
-# obj_lb = -125*dim # maximum obj val for 4D SkyTang
 
 def reachability_uniformity(behavior, n_bins = 25, obj_lb = -5, obj_ub = 5):
     behavior = behavior.squeeze(1).numpy()
     num = len(behavior)
     cum_hist, _ = np.histogram(behavior, np.linspace(obj_lb, obj_ub, n_bins + 1))
     cum_hist = cum_hist[np.nonzero(cum_hist)] / (num) # discrete distribution
-    cum_hist_uni = np.mean(cum_hist) * np.ones_like(cum_hist) # theoretical uniform distribution
-
-    cum_coverage = len(cum_hist) / n_bins
-    # cum_uniformity = 1 - jensenshannon(cum_hist, cum_hist_uni, base=2)
-    
+    cum_coverage = len(cum_hist) / n_bins   
     return cum_coverage
     
 class CustomAcquisitionFunction(AnalyticAcquisitionFunction):
@@ -124,19 +108,13 @@ class TurboState:
 
 
 def update_state(state, Y_next, Y_sampled, x_next):
-    # sum_of_distance = torch.sum(torch.cdist(Y_next, Y_sampled)**2)**0.5
-    # sum_of_distance = torch.sum(torch.sort(torch.cdist(Y_next, Y_sampled), dim=-1).values[:,0:40]**2, dim=-1)**0.5
-    
+   
     sum_of_distance = torch.cat((Y_sampled, Y_next)).var()
-    
-    # if max(Y_next) > state.best_value + 1e-3 * math.fabs(state.best_value):
-    #     state.success_counter += 1
-    #     state.failure_counter = 0
     
     if sum_of_distance > state.best_value + 1e-3 * math.fabs(state.best_value):
         state.success_counter += 1
         state.failure_counter = 0
-        # state.x_center = x_next[0].clone()
+
     else:
         state.success_counter = 0
         state.failure_counter += 1
@@ -148,16 +126,10 @@ def update_state(state, Y_next, Y_sampled, x_next):
         state.length /= 2.0
         state.failure_counter = 0
 
-    # state.best_value = max(state.best_value, max(Y_next).item())
     state.best_value = max(state.best_value, sum_of_distance.item())
     if state.length < state.length_min:
         state.restart_triggered = True
     return state
-
-
-
-
-
 
 def get_initial_points(dim, n_pts, seed):
     sobol = SobolEngine(dimension=dim, scramble=True, seed=seed)
@@ -170,10 +142,10 @@ def generate_batch(
     X,  # Evaluated points on the domain [0, 1]^d
     Y,  # Function values
     batch_size,
-    n_candidates=None,  # Number of candidates for Thompson sampling
+    n_candidates=None, 
     num_restarts=10,
     raw_samples=512,
-    acqf="ts",  # "ei" or "ts"
+    acqf="ts", 
 ):
     assert acqf in ("ts", "ei")
     assert X.min() >= 0.0 and X.max() <= 1.0 and torch.all(torch.isfinite(Y))
@@ -182,16 +154,13 @@ def generate_batch(
 
     # Scale the TR to be proportional to the lengthscales
     x_center = X[torch.argmax(torch.sum(torch.cdist(Y, Y), dim=-1))].clone() # select point that has the largest sum of distance from all other sampled points
-    # x_center = X[Y.argmax(), :].clone()
-   
+  
     weights = model.covar_module.base_kernel.lengthscale.squeeze().detach()
     weights = weights / weights.mean()
     weights = weights / torch.prod(weights.pow(1.0 / len(weights)))
     tr_lb = torch.clamp(x_center - weights * state.length / 2.0, 0.0, 1.0)
     tr_ub = torch.clamp(x_center + weights * state.length / 2.0, 0.0, 1.0)
 
-    
-    # acq_fun = qLogExpectedImprovement(model, Y_turbo.max())
     acq_fun = CustomAcquisitionFunction(model, Y, k_NN)
     X_next, acq_value = optimize_acqf(
         acq_fun,
@@ -209,7 +178,6 @@ coverage_list = [[] for _ in range(replicate)]
 for seed in range(replicate):
 
     state = TurboState(dim=dim, batch_size=batch_size)
-    # print(state)
     
     X_turbo = get_initial_points(dim, n_init, seed)
     Y_turbo = torch.tensor(
@@ -217,10 +185,7 @@ for seed in range(replicate):
     ).unsqueeze(-1)
     coverage = reachability_uniformity(Y_turbo, n_bins, obj_lb, obj_ub)
     coverage_list[seed].append(coverage)
-    # best_value = torch.max(torch.sum(torch.cdist(Y_turbo, Y_turbo)**2, dim=-1)**0.5)
-    # best_value = torch.sum(torch.sort(torch.cdist(Y_turbo, Y_turbo), dim=-1).values[:,0:40]**2, dim=-1)**0.5
-    # best_value = torch.max(best_value)
-    
+   
     best_value = Y_turbo.var()
     state = TurboState(dim, batch_size=batch_size, best_value=best_value.item())
     
@@ -230,16 +195,10 @@ for seed in range(replicate):
     
     torch.manual_seed(seed)
     
-    # while not state.restart_triggered:  # Run until TuRBO converges
     for _ in range(BO_iter):
-        # Fit a GP model
-        # train_Y = (Y_turbo - Y_turbo.mean()) / Y_turbo.std()
+        # Fit a GP model       
         likelihood = GaussianLikelihood(noise_constraint=Interval(1e-8, 1e-3))
-        # covar_module = ScaleKernel(  # Use the same lengthscale prior as in the TuRBO paper
-        #     MaternKernel(
-        #         nu=2.5, ard_num_dims=dim, lengthscale_constraint=Interval(0.005, 4.0)
-        #     )
-        # )
+       
         covar_module = ScaleKernel(  # Use the same lengthscale prior as in the TuRBO paper
             RBFKernel(
                 ard_num_dims=dim, lengthscale_constraint=Interval(0.005, 4.0)
@@ -289,25 +248,7 @@ for seed in range(replicate):
         print('reachability=', coverage)
         # Print current status
         print(
-            f"{len(X_turbo)}) Best value: {state.best_value:.2e}, TR length: {state.length:.2e}"
+            f"{len(X_turbo)}) TR length: {state.length:.2e}"
         )
 
 coverage_list = torch.tensor(coverage_list)
-torch.save(coverage_list, '20DAckley_coverage_TR_BEACON.pt')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
