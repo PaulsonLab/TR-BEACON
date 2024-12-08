@@ -36,5 +36,17 @@ python Continuous_MaxVar_RS.py
 Run the following commands to execute sobol on a 20-d Ackley function:
    
 ```sh
-python Continuous_sobol.py
+python Continuous_Sobol.py
+```
+
+Run the following commands to execute logEI on a 20-d Ackley function:
+   
+```sh
+python Continuous_LogEI.py
+```
+
+Run the following commands to execute NS-FS on a 20-d Ackley function:
+   
+```sh
+python Continuous_NSFS.py
 ```
