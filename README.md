@@ -11,7 +11,7 @@ pip install -r requirements.txt
 ```
 
 # Usage
-We provide the code scripts for executing TR-BEACON, BEACON, and other SOTA novelty search algorithm on a 20-d Ackley function. Noted that all code script requires the usage of [ThompsonSampling.py](https://github.com/PaulsonLab/BEACON/blob/1ede361eb98824b459da9df3a17839ab8753d02b/ThompsonSampling.py) file to perform efficient Thompson sampling strategy proposed in [this work](https://arxiv.org/abs/2002.09309).
+We provide the code scripts for executing TR-BEACON, BEACON, and other SOTA novelty search algorithm on a 20-d Ackley function. Noted that TR-BEACON and BEACON requires the usage of [ThompsonSampling.py](https://github.com/PaulsonLab/BEACON/blob/1ede361eb98824b459da9df3a17839ab8753d02b/ThompsonSampling.py) file to perform efficient Thompson sampling strategy proposed in [this work](https://arxiv.org/abs/2002.09309).
 
 Running Experiments
 ------------------------------
