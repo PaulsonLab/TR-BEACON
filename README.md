@@ -20,3 +20,21 @@ Run the following commands to execute TR-BEACON on a 20-d Ackley function:
 ```sh
 python Continuous_TR_BEACON.py
 ```
+
+Run the following commands to execute BEACON on a 20-d Ackley function:
+   
+```sh
+python Continuous_BEACON.py
+```
+
+Run the following commands to execute MaxVar on a 20-d Ackley function:
+   
+```sh
+python Continuous_MaxVar_RS.py
+```
+
+Run the following commands to execute sobol on a 20-d Ackley function:
+   
+```sh
+python Continuous_sobol.py
+```
