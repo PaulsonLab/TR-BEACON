@@ -11,41 +11,41 @@ pip install -r requirements.txt
 ```
 
 # Usage
-We provide the code scripts for executing TR-BEACON, BEACON, and other SOTA novelty search algorithm. Noted that all code script requires the usage of [ThompsonSampling.py](https://github.com/PaulsonLab/BEACON/blob/1ede361eb98824b459da9df3a17839ab8753d02b/ThompsonSampling.py) file to perform efficient Thompson sampling strategy proposed in [this work](https://arxiv.org/abs/2002.09309).
+We provide the code scripts for executing TR-BEACON, BEACON, and other SOTA novelty search algorithm on a 20-d Ackley function. Noted that all code script requires the usage of [ThompsonSampling.py](https://github.com/PaulsonLab/BEACON/blob/1ede361eb98824b459da9df3a17839ab8753d02b/ThompsonSampling.py) file to perform efficient Thompson sampling strategy proposed in [this work](https://arxiv.org/abs/2002.09309).
 
 Running Experiments
 ------------------------------
-Run the following commands to execute TR-BEACON on a 20-d Ackley function:
+Run the following commands to execute TR-BEACON:
    
 ```sh
 python Continuous_TR_BEACON.py
 ```
 
-Run the following commands to execute BEACON on a 20-d Ackley function:
+Run the following commands to execute BEACON:
    
 ```sh
 python Continuous_BEACON.py
 ```
 
-Run the following commands to execute MaxVar on a 20-d Ackley function:
+Run the following commands to execute MaxVar:
    
 ```sh
 python Continuous_MaxVar_RS.py
 ```
 
-Run the following commands to execute sobol on a 20-d Ackley function:
+Run the following commands to execute sobol:
    
 ```sh
 python Continuous_Sobol.py
 ```
 
-Run the following commands to execute logEI on a 20-d Ackley function:
+Run the following commands to execute logEI:
    
 ```sh
 python Continuous_LogEI.py
 ```
 
-Run the following commands to execute NS-FS on a 20-d Ackley function:
+Run the following commands to execute NS-FS:
    
 ```sh
 python Continuous_NS-FS.py
