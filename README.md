@@ -48,5 +48,5 @@ python Continuous_LogEI.py
 Run the following commands to execute NS-FS on a 20-d Ackley function:
    
 ```sh
-python Continuous_NSFS.py
+python Continuous_NS-FS.py
 ```
